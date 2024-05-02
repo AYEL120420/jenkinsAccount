@@ -1,23 +1,22 @@
-pipeline{  
-    agent any 
-        stages{ 
-            stage('Build Application') { 
-                steps { 
-                bat 'mvn clean install' 
-                } 
-        } 
-            stage('Deploy CloudHubs') { 
-            environment { 
-            ANYPOINT_CREDENTIALS = credentials('f2ec664c-f2dc-42c9-84c5-f34d7272184d') 
-            } 
-        steps { 
-        echo 'Deploying mule project due to the latest code commit…' 
-        echo 'Deploying to the configured environment….' 
-        bat 'mvn clean deploy -DmuleDeploy  
-        -Dusername=${ANYPOINT_CREDENTIALS_USR} -
-        Dpassword=${ANYPOINT_CREDENTIALS_PSW} 
-        -DworkerType=Micro -Dworkers=1' 
-        }  
-        } 
-     } 
+pipeline {
+  agent any
+  triggers{
+    pollSCM('H/2 * * * *')
+  }
+  stages {
+   stage('Build Application') {
+      steps {
+        sh 'mvn clean install -X'
+      }  
+    }
+    stage('Deploy CloudHub') {
+      environment {
+        ANYPOINT_CREDENTIALS = credentials('f2ec664c-f2dc-42c9-84c5-f34d7272184d')
+      }
+      steps {
+        echo "user name : ${env.ANYPOINT_CREDENTIALS_USR}"
+        sh "mvn deploy -DmuleDeploy -Dcloud.env=Sandbox -DcloudhubAppName=account-api-raml -Dmule.version=4.6.1 -Dcloud.user=${ANYPOINT_CREDENTIALS_USR} -Dcloud.password=${ANYPOINT_CREDENTIALS_PSW}"
+      }
+    }
+  }
 }
