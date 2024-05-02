@@ -1,13 +1,13 @@
 pipeline {
-  agent any
-  triggers{
-    pollSCM('H/2 * * * *')
-  }
-  stages {
-   stage('Build Application') {
-      steps {
-        sh 'mvn clean install'
-      }  
-    }
-  }
-}
+    agent { label "built-in" }
+        triggers {
+        pollSCM('H/2 * * * *')    
+                }
+            stages {
+        stage('build') {
+                steps {
+                sh 'docker --version'
+                        }
+                }
+                    }
+        }
