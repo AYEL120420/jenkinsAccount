@@ -13,9 +13,16 @@ pipeline {
       environment {
         ANYPOINT_CREDENTIALS = credentials('f2ec664c-f2dc-42c9-84c5-f34d7272184d')
       }
-      steps {
-        sh "mvn deploy -DmuleDeploy -Dcloud.env=Sandbox -DcloudhubAppName=account-api-raml -Dmule.version=4.6.1 -Dcloud.user=${ANYPOINT_CREDENTIALS_USR} -Dcloud.password=${ANYPOINT_CREDENTIALS_PSW}"
-      }
+      steps { 
+            echo 'Deploying mule project due to the latest code commit…' 
+            echo 'Deploying to the configured environment….' 
+            sh 'mvn clean deploy -DmuleDeploy  
+            -DcloudhubAppName=account-api 
+            -Dmule.version=4.6.1
+            -Dusername=${ANYPOINT_CREDENTIALS_USR} -
+            Dpassword=${ANYPOINT_CREDENTIALS_PSW} 
+            -DworkerType=Micro -Dworkers=1' 
+            }  
     }
   }
 }
